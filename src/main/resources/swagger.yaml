@@ -1,0 +1,104 @@
+swagger: "2.0"
+info:
+  description: "This is TNT Aggregator API created for assessment purpose"
+  version: "1.0.0"
+  title: "TNT Aggregator API"
+basePath: "/aggregation"
+schemes:
+  - "https"
+  - "http"
+paths:
+  /:
+    get:
+      tags:
+        - "get details"
+      summary: "The API accepts three different parameters to specify the values to be passed to the individual backing
+                APIs."
+      description: "The API accepts three different parameters to specify the values to be passed to the individual backing
+                    APIs."
+      operationId: "getPackageDetails"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "pricing"
+          in: "query"
+          description: "county codes"
+          required: true
+          type: "array"
+          items:
+            type: "string"
+            pattern:  "^/[a-z]{2}/i$"
+
+        - name: "track"
+          in: "query"
+          description: "9 digit order numbers"
+          required: true
+          type: "array"
+          items:
+            type: "string"
+            pattern:  "^/d{9}/$"
+
+        - name: "shipments"
+          in: "query"
+          description: "9 digit order numbers"
+          required: true
+          type: "array"
+          items:
+            type: "string"
+            pattern:  "^/d{9}/$"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Details"
+        "400":
+          description: "Invalid input"
+        "404":
+          description: "Details not found"
+        "503":
+          description:  "Service unavailable"
+        "500":
+          description: "Call to API failed"
+          schema:
+            $ref: "#/definitions/ApiError"
+
+definitions:
+
+  Details:
+    type: "object"
+    properties:
+      pricing:
+        $ref: "#/definitions/Pricing"
+      track:
+        $ref: "#/definitions/Track"
+      shipments:
+        $ref: "#/definitions/Shipments"
+
+  Pricing:
+    type: "object"
+    additionalProperties:
+      type: "string"
+
+  Track:
+    type: "object"
+    additionalProperties:
+      type: "string"
+
+  Shipments:
+    type: object
+    additionalProperties:
+      type: "array"
+      items:
+        type: string
+
+  ApiError:
+    type: "object"
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+
+
+
+
